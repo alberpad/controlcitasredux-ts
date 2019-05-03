@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ICita } from './AgregarCitaCompleto';
+import { ICita } from '../store/citas/types';
 
 interface ICitaProps {
   info: ICita;

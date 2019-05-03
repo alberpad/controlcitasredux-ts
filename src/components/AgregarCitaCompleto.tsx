@@ -1,14 +1,7 @@
 import React, { createRef, useRef, Component } from 'react';
 import uuid from 'uuid';
+import { ICita } from '../store/citas/types';
 
-export interface ICita {
-  id: string;
-  mascota: string;
-  propietario: string;
-  fecha: string;
-  hora: string;
-  sintomas: string;
-}
 interface IAgregarCitaProps {
   crearCita: (a: ICita) => void;
 }
