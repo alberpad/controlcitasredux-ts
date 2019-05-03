@@ -1,8 +1,8 @@
-export const MOSTRAR_CITAS = 'MOSTRAR_CITAS';
-export const MOSTRAR_CITA = 'MOSTRAR_CITA';
-export const ELIMINAR_CITA = 'ELIMINAR_CITA';
-export const AGREGAR_CITA = 'AGREGAR_CITA';
-export const EDITAR_CITA = 'EDITAR_CITA';
+export const MOSTRAR_CITAS = "MOSTRAR_CITAS";
+export const MOSTRAR_CITA = "MOSTRAR_CITA";
+export const ELIMINAR_CITA = "ELIMINAR_CITA";
+export const AGREGAR_CITA = "AGREGAR_CITA";
+export const EDITAR_CITA = "EDITAR_CITA";
 
 export interface ICita {
   id: string;
@@ -17,34 +17,34 @@ export interface ICitasState {
   citas: ICita[];
 }
 
-interface IMostrarCitasAction {
+interface IActionMostarCitas {
   type: typeof MOSTRAR_CITAS;
   // payload: ICita[];
 }
 
-interface IMostrarCitaAction {
+interface IActionMostrarCita {
   type: typeof MOSTRAR_CITA;
   payload: ICita;
 }
 
-interface IEliminarCitaAction {
+interface IActionEliminarCita {
   type: typeof ELIMINAR_CITA;
-  payload: number; //id del cita
+  payload: string; //id del cita
 }
 
-interface IAgregarCitaAction {
+interface IActionAgregarCita {
   type: typeof AGREGAR_CITA;
   payload: ICita;
 }
 
-interface IEditarCitaAction {
+interface IActionEditarCita {
   type: typeof EDITAR_CITA;
   payload: ICita;
 }
 
 export type TCitasActionsTypes =
-  | IMostrarCitasAction
-  | IEliminarCitaAction
-  | IAgregarCitaAction
-  | IMostrarCitaAction
-  | IEditarCitaAction;
+  | IActionMostarCitas
+  | IActionEliminarCita
+  | IActionAgregarCita
+  | IActionMostrarCita
+  | IActionEditarCita;

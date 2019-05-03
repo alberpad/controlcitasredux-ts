@@ -8,23 +8,27 @@ import {
   // MOSTRAR_CITA,
   ELIMINAR_CITA,
   AGREGAR_CITA
-} from './types';
+} from "./types";
 
 const initialState: ICitasState = {
   citas: [
     {
-      id: '0',
-      fecha: '10-20-30',
-      hora: '10:30',
-      mascota: 'Perro',
-      propietario: 'Juan',
-      sintomas: 'no quiere comer'
+      id: "0",
+      fecha: "10-20-30",
+      hora: "10:30",
+      mascota: "Perro",
+      propietario: "Juan",
+      sintomas: "no quiere comer"
     }
   ]
 };
 
+const _storageCitas = localStorage.getItem("citas");
+let storageCitas = { citas: [] };
+if (_storageCitas) storageCitas = JSON.parse(_storageCitas);
+
 export default function citasReducer(
-  state: ICitasState = initialState,
+  state: ICitasState = storageCitas,
   action: TCitasActionsTypes
 ) {
   switch (action.type) {
@@ -36,7 +40,7 @@ export default function citasReducer(
     case ELIMINAR_CITA:
       return {
         ...state,
-        citas: state.citas.filter((cita) => Number(cita.id) !== action.payload)
+        citas: state.citas.filter(cita => cita.id !== action.payload)
       };
     case AGREGAR_CITA:
       return {

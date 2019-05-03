@@ -1,5 +1,9 @@
-import React, { Component } from 'react';
-import { ICita } from '../store/citas/types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+
+import { ICita } from "../store/citas/types";
+import { eliminarCita } from "../store/citas/actions";
+import { IState } from "../store";
 
 interface ICitaProps {
   info: ICita;
@@ -8,11 +12,12 @@ interface ICitaProps {
 }
 
 class Cita extends Component<ICitaProps> {
-  _eliminarCita = () => {
+  handleEliminar = () => {
+    console.log(this.props.info.id);
     this.props.eliminarCita(this.props.info.id);
   };
   render() {
-    const { id, mascota, propietario, fecha, hora, sintomas } = this.props.info;
+    const { mascota, propietario, fecha, hora, sintomas } = this.props.info;
     return (
       <div>
         <div className="media mt-3">
@@ -34,7 +39,7 @@ class Cita extends Component<ICitaProps> {
               <span>Síntomas:</span>
             </p>
             <p className="card-text">{sintomas}</p>
-            <button className="btn btn-danger" onClick={this._eliminarCita}>
+            <button className="btn btn-danger" onClick={this.handleEliminar}>
               Eliminar
             </button>
           </div>
@@ -44,4 +49,7 @@ class Cita extends Component<ICitaProps> {
   }
 }
 
-export default Cita;
+export default connect(
+  null,
+  { eliminarCita }
+)(Cita);

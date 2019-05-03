@@ -1,52 +1,47 @@
-import React, { createRef, useRef, Component } from 'react';
-import uuid from 'uuid';
+import React, { createRef, Component } from "react";
+import uuid from "uuid";
+import { connect } from "react-redux";
 
-export interface ICita {
-  id: string;
-  mascota: string;
-  propietario: string;
-  fecha: string;
-  hora: string;
-  sintomas: string;
-}
+import { ICita, ICitasState } from "../store/citas/types";
+import { agregarCita } from "../store/citas/actions";
+import { mostrarError } from "../store/error/actions";
+import { IState } from "../store";
+
 interface IAgregarCitaProps {
-  crearCita: (a: ICita) => void;
+  agregarCita: (a: ICita) => void;
+  mostrarError: (estado: boolean) => void;
+  error: boolean;
 }
 interface IAgregarCitaState {}
 class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
   state = {
-    error: false
+    mascota: "",
+    propietario: "",
+    fecha: "",
+    hora: "",
+    sintomas: ""
   };
 
-  // nombreMascotaRef = useRef<HTMLSelectElement>(null);
-  nombreMascotaRef = createRef<HTMLInputElement>();
-  propieatrioRef = createRef<HTMLInputElement>();
-  fechaRef = createRef<HTMLInputElement>();
-  horaRef = createRef<HTMLInputElement>();
-  sintomasRef = createRef<HTMLTextAreaElement>();
+  componentWillMount() {
+    this.props.mostrarError(false);
+  }
+
+  private handleOnChange = (
+    e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>
+  ) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
 
   private handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let mascota, propietario, fecha, hora, sintomas: string;
-    this.nombreMascotaRef.current
-      ? (mascota = this.nombreMascotaRef.current.value)
-      : (mascota = '');
-    this.propieatrioRef.current
-      ? (propietario = this.propieatrioRef.current.value)
-      : (propietario = '');
-    this.fechaRef.current
-      ? (fecha = this.fechaRef.current.value)
-      : (fecha = '');
-    this.horaRef.current ? (hora = this.horaRef.current.value) : (hora = '');
-    this.sintomasRef.current
-      ? (sintomas = this.sintomasRef.current.value)
-      : (sintomas = '');
+    const { mascota, propietario, fecha, hora, sintomas } = this.state;
 
     if (!mascota || !propietario || !fecha || !hora || !sintomas) {
-      console.log('faltan campos');
-      this.setState({ error: true });
+      this.props.mostrarError(true);
     } else {
-      this.setState({ error: false });
+      this.props.mostrarError(false);
       const nuevaCita: ICita = {
         id: uuid(),
         mascota,
@@ -55,13 +50,14 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
         hora,
         sintomas
       };
-      this.props.crearCita(nuevaCita);
+      this.props.agregarCita(nuevaCita);
+
       e.currentTarget.reset();
     }
   };
 
   render() {
-    const existeError: boolean = this.state.error;
+    const existeError: boolean = this.props.error;
     return (
       <div className="card mt-5">
         <div className="card-body">
@@ -73,10 +69,11 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
               </label>
               <div className="col-sm-8 col-lg-10">
                 <input
+                  name="mascota"
+                  onChange={this.handleOnChange}
                   type="text"
                   className="form-control"
                   placeholder="Nombre Mascota"
-                  ref={this.nombreMascotaRef}
                 />
               </div>
             </div>
@@ -86,7 +83,8 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
               </label>
               <div className="col-sm-8 col-lg-10">
                 <input
-                  ref={this.propieatrioRef}
+                  name="propietario"
+                  onChange={this.handleOnChange}
                   type="text"
                   className="form-control"
                   placeholder="Nombre Dueño de la Mascota"
@@ -98,7 +96,8 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
               <label className="col-sm-4 col-lg-2 col-form-label">Fecha</label>
               <div className="col-sm-8 col-lg-4  mb-4 mb-lg-0">
                 <input
-                  ref={this.fechaRef}
+                  name="fecha"
+                  onChange={this.handleOnChange}
                   type="date"
                   className="form-control"
                 />
@@ -107,7 +106,8 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
               <label className="col-sm-4 col-lg-2 col-form-label">Hora</label>
               <div className="col-sm-8 col-lg-4">
                 <input
-                  ref={this.horaRef}
+                  name="hora"
+                  onChange={this.handleOnChange}
                   type="time"
                   className="form-control"
                 />
@@ -119,7 +119,11 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
                 Sintomas
               </label>
               <div className="col-sm-8 col-lg-10">
-                <textarea ref={this.sintomasRef} className="form-control" />
+                <textarea
+                  name="sintomas"
+                  onChange={this.handleOnChange}
+                  className="form-control"
+                />
               </div>
             </div>
             <div className="form-group row justify-content-end">
@@ -141,4 +145,12 @@ class AgregarCita extends Component<IAgregarCitaProps, IAgregarCitaState> {
   }
 }
 
-export default AgregarCita;
+const mapStateToProps = (state: IState) => ({
+  citas: state.stateCitas.citas,
+  error: state.stateError.error
+});
+
+export default connect(
+  mapStateToProps,
+  { agregarCita, mostrarError }
+)(AgregarCita);
